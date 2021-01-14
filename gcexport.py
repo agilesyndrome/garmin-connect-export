@@ -22,6 +22,7 @@ from os.path import isfile
 from os import mkdir
 from os import remove
 from os import stat
+from os import getenv
 from xml.dom.minidom import parseString
 from subprocess import call
 
@@ -188,8 +189,8 @@ print 'Welcome to Garmin Connect Exporter!'
 if isdir(args.directory):
 	print 'Warning: Output directory already exists. Will skip already-downloaded files and append to the CSV file.'
 
-username = args.username if args.username else raw_input('Username: ')
-password = args.password if args.password else getpass()
+username = getenv('GARMIN_USER')
+password = getenv('GARMIN_PASSWORD')
 
 # Maximum number of activities you can request at once.
 # Used to be 100 and enforced by Garmin for older endpoints; for the current endpoint 'url_gc_search'
@@ -470,7 +471,7 @@ while total_downloaded < total_to_download:
 			file_mode = 'w'
 		elif args.format == 'original':
 			data_filename = args.directory + '/activity_' + str(a['activityId']) + '.zip'
-			fit_filename = args.directory + '/' + str(a['activityId']) + '.fit'
+			fit_filename = args.directory + '/' + str(a['activityId']) + '_ACTIVITY.fit'
 			download_url = url_gc_original_activity + str(a['activityId'])
 			file_mode = 'wb'
 		elif args.format == 'json':
